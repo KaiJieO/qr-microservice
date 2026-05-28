@@ -1,0 +1,159 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 40px 20px;
+  text-align: center;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 40px;
+}
+
+.app-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.app-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.generated-qr-display {
+  margin-bottom: 40px;
+}
+
+.generated-qr-display h2 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.qr-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.qr-result-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-left: 5px solid #4caf50;
+}
+
+.qr-card-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.qr-result-card h3 {
+  margin: 0 0 20px 0;
+  color: #4caf50;
+  font-size: 18px;
+}
+
+.qr-code-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 220px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.qr-code-container canvas {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.qr-result-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.qr-result-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.qr-result-info code {
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: #666;
+  word-break: break-all;
+}
+
+.qr-result-info a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.qr-result-info a:hover {
+  text-decoration: underline;
+}
+
+.status {
+  font-weight: 600;
+}
+
+.app-footer {
+  background: rgba(255, 255, 255, 0.05);
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: auto;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 30px 20px;
+  }
+
+  .app-header h1 {
+    font-size: 28px;
+  }
+
+  .qr-result-info {
+    grid-template-columns: 1fr;
+  }
+
+  .qr-card-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .qr-code-container {
+    min-width: 100%;
+  }
+}
