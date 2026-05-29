@@ -16,6 +16,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.flywaydb:flyway-core:10.4.1")
+	implementation("org.flywaydb:flyway-mysql:10.4.1")
 	implementation("com.mysql:mysql-connector-j:8.2.0")
 	implementation("net.glxn.qrgen:javase:2.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind")

@@ -4,7 +4,10 @@
       "Bash(mysql --version)",
       "Bash(mysql *)",
       "PowerShell(Get-ChildItem *)",
-      "Bash(gradle bootRun)"
+      "Bash(gradle bootRun)",
+      "PowerShell(head *)",
+      "Bash(./gradlew clean *)",
+      "Bash(git add *)"
     ]
   }
 }

@@ -35,9 +35,6 @@ public class QrCode {
 	@Column(nullable = false)
 	private LocalDateTime expiredAt;
 
-	@Column(columnDefinition = "LONGBLOB")
-	private byte[] qrCodeData;
-
 	@Column(length = 100)
 	private String createdBy;
 

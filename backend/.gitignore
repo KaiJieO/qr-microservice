@@ -28,3 +28,4 @@ application-dev.yml
 # Other
 node_modules/
 *.jar
+.claude/
