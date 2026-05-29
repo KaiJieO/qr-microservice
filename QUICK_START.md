@@ -1,10 +1,11 @@
 # Quick Start - 5 Minute Setup
 
+**Backend microservice only. No frontend included. Use REST API for integration.**
+
 ## Prerequisite Check
 
 ```powershell
 java -version          # Java 17+
-node --version         # Node 16+
 docker --version       # Optional but recommended
 ```
 
@@ -23,7 +24,7 @@ docker run --name postgres-qr `
 docker-compose up -d postgres
 ```
 
-## Terminal 1: Start Backend
+## Start Backend
 
 ```powershell
 cd C:\Users\Kai Lin\Documents\Github\qr-microservice\backend
@@ -32,21 +33,9 @@ gradle bootRun
 
 ✅ Backend ready on `http://localhost:8080`
 
-## Terminal 2: Start Frontend
-
-```powershell
-cd C:\Users\Kai Lin\Documents\Github\qr-microservice\frontend
-npm install
-npm start
-```
-
-✅ Frontend opens on `http://localhost:3000`
-
 ## That's It!
 
-- **Generate QR**: Fill form → click Generate
-- **View History**: Auto-loads table below
-- **Filter**: Click status buttons (Valid/Expired)
+Backend microservice running. Test via cURL or Postman.
 
 ## Testing Endpoints
 
@@ -70,7 +59,7 @@ curl http://localhost:8080/api/qr-codes/status/VALID
 ## Stop Services
 
 ```powershell
-# Ctrl+C in backend and frontend terminals
+# Ctrl+C in backend terminal
 # Stop database
 docker stop postgres-qr
 ```
@@ -82,8 +71,6 @@ See `SETUP.md` for full Windows setup with troubleshooting.
 ## Architecture
 
 ```
-Frontend (React 18)
-      ↓ HTTP
 Backend (Spring Boot 3.2 / Java 17)
       ↓ SQL
 Database (PostgreSQL 15)
@@ -97,10 +84,6 @@ qr-microservice/
 │   ├── src/main/java/    # Source code
 │   ├── build.gradle.kts  # Gradle config
 │   └── README.md
-├── frontend/              # React app
-│   ├── src/              # Source code
-│   ├── package.json      # Dependencies
-│   └── README.md
 ├── docker-compose.yml    # Database setup
 ├── README.md            # Full documentation
 ├── SETUP.md             # Detailed Windows setup
@@ -113,17 +96,13 @@ qr-microservice/
 |-------|-----|
 | Port 5432 in use | `docker stop postgres-qr` or check Services |
 | Backend won't connect to DB | Check docker is running: `docker ps` |
-| Frontend shows "Failed to fetch" | Backend not running on 8080 |
-| npm: command not found | Restart PowerShell after installing Node |
 
 ## Next
 
 - Modify QR expiry: `backend/src/main/resources/application.yml`
-- Change frontend colors: `frontend/src/App.css`
 - Add authentication: See README.md Future Steps
 
 ---
 
 **API Base:** `http://localhost:8080/api`  
-**Frontend:** `http://localhost:3000`  
 **Database:** `localhost:5432`

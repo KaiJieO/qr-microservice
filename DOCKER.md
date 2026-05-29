@@ -1,5 +1,7 @@
 # Docker Deployment Guide
 
+**Backend microservice only. No frontend included.**
+
 Complete containerization for QR Microservice with multi-stage builds and health checks.
 
 ## Architecture
@@ -10,13 +12,13 @@ Complete containerization for QR Microservice with multi-stage builds and health
 │                   (qr-network)                       │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────┐ │
-│  │  Frontend   │  │   Backend    │  │ PostgreSQL│ │
-│  │  :3000      │  │   :8080      │  │  :5432    │ │
-│  │ (React)     │  │ (Spring Boot)│  │           │ │
-│  └─────────────┘  └──────────────┘  └───────────┘ │
-│         │                │                 │       │
-│         └────────────────┴─────────────────┘       │
+│  ┌──────────────┐  ┌───────────┐                  │
+│  │   Backend    │  │ PostgreSQL│                  │
+│  │   :8080      │  │  :5432    │                  │
+│  │ (Spring Boot)│  │           │                  │
+│  └──────────────┘  └───────────┘                  │
+│         │                │                         │
+│         └────────────────┘                         │
 │                                                     │
 │  ┌─────────────────────────────────────────────┐  │
 │  │          pgAdmin (optional)                 │  │
@@ -55,9 +57,7 @@ docker-compose logs -f frontend
 
 ### 3. Access Services
 
-- **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:8080/api
-- **pgAdmin:** http://localhost:5050 (admin@example.com / admin)
 
 ## Service Details
 
@@ -89,32 +89,6 @@ docker-compose logs -f frontend
   - SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/qrcode_db
   - SPRING_DATASOURCE_USERNAME: postgres
   - SPRING_DATASOURCE_PASSWORD: postgres
-```
-
-### Frontend Service
-
-```
-- Image: Built from frontend/Dockerfile
-- Container: qr-frontend
-- Port: 3000
-- Language: Node.js 18
-- Framework: React 18
-- Build: npm (2-stage build)
-- Server: serve (production build)
-- Depends On: backend
-- Environment:
-  - REACT_APP_API_BASE: http://localhost:8080/api
-```
-
-### PgAdmin (Optional)
-
-```
-- Image: dpage/pgadmin4:latest
-- Container: qr-pgadmin
-- Port: 5050
-- Email: admin@example.com
-- Password: admin
-- Depends On: postgres
 ```
 
 ## Testing & Validation
@@ -161,16 +135,7 @@ curl http://localhost:8080/api/qr-codes
 # Expected: [] (empty array)
 ```
 
-### Test 5: Frontend Load
-
-```powershell
-# Open browser
-Start-Process http://localhost:3000
-
-# Expected: QR Code Service UI loads
-```
-
-### Test 6: End-to-End QR Generation
+### Test 5: End-to-End QR Generation
 
 ```powershell
 # Generate QR via API
@@ -188,13 +153,11 @@ $response = Invoke-WebRequest -Uri "http://localhost:8080/api/qr-codes" `
 $qrId = ($response.Content | ConvertFrom-Json).id
 Write-Output "Generated QR: $qrId"
 
-# Verify in frontend
-# 1. Refresh http://localhost:3000
-# 2. QR should appear in "Active QR Codes" section with visual code
-# 3. QR should appear in "QR Code History" table
+# Verify in database
+docker exec qr-postgres psql -U postgres -d qrcode_db -c "SELECT id, sublinkUrl, status FROM qr_codes WHERE id = '$qrId';"
 ```
 
-### Test 7: Auto-Expiration Scheduler
+### Test 6: Auto-Expiration Scheduler
 
 ```powershell
 # Generate QR with 1 minute expiry
@@ -221,7 +184,7 @@ Write-Output "QR Status: $($qr.status)"
 # Expected: EXPIRED
 ```
 
-### Test 8: Database Persistence
+### Test 7: Database Persistence
 
 ```powershell
 # Stop containers
@@ -326,30 +289,6 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 - Only compiled JAR needed at runtime
 - ~200MB → ~150MB image size
 
-### Frontend (Node)
-
-```dockerfile
-# Stage 1: Build with npm
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
-COPY . .
-RUN npm run build
-
-# Stage 2: Runtime with serve
-FROM node:18-alpine
-RUN npm install -g serve
-COPY --from=builder /app/build ./build
-EXPOSE 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
-```
-
-**Benefits:**
-- node_modules removed from final image
-- Production-optimized build
-- ~500MB → ~200MB image size
-
 ## Production Deployment
 
 ### Update docker-compose for production
@@ -403,14 +342,12 @@ docker push myregistry/qr-frontend:1.0
 **Image Sizes (approximate):**
 - PostgreSQL: 80MB
 - Backend: 150MB
-- Frontend: 200MB
-- Total: ~430MB
+- Total: ~230MB
 
 **Startup Times:**
 - PostgreSQL: 5-10 seconds
 - Backend: 15-20 seconds
-- Frontend: 2-3 seconds
-- Total: ~30-40 seconds
+- Total: ~25-30 seconds
 
 **Health Checks:**
 - PostgreSQL: Every 10s, timeout 5s, max 5 retries
